@@ -1,4 +1,5 @@
 ﻿using HRAdministrationAPI;
+using SchoolHRAdministration;
 
 decimal totalSalaries = 0;
 List<IEmployee> employees = new List<IEmployee>();
@@ -13,45 +14,16 @@ SeedData(employees);
 Console.WriteLine($"Total Annual Salaries(Including bonuses): {employees.Sum(emp => emp.Salary)}");
 static void SeedData(List<IEmployee> employees)
 {
-    IEmployee teacher1 = new Teacher()
-    {
-        FirstName = "Teacher",
-        LastName = "Teacher",
-        Id = 1,
-        Salary = 20000
-    };
+    IEmployee teacher1 = EmployeeFactory.GetEmployeeInstance(EmployeeType.Teacher, 1, "Teacher", "Kindiki", 20000);
     employees.Add(teacher1);
-    IEmployee teacher2 = new Teacher()
-    {
-        FirstName = "Jack",
-        LastName = "Matubia",
-        Id = 2,
-        Salary = 50000
-    };
+    IEmployee teacher2 = EmployeeFactory.GetEmployeeInstance(EmployeeType.Teacher, 2, "Jack", "Matubia", 25000);
+
     employees.Add(teacher2);
-    IEmployee headMaster = new HeadMaster()
-    {
-        FirstName = "John",
-        LastName = "Doe",
-        Id = 3,
-        Salary = 25000
-    };
+    IEmployee headMaster = EmployeeFactory.GetEmployeeInstance(EmployeeType.HeadMaster, 3, "John", "Doe", 30000);
     employees.Add(headMaster);
-    IEmployee headOfDepartment = new HeadOfDepartment()
-    {
-        FirstName = "Jane",
-        LastName = "Dew",
-        Id = 4,
-        Salary = 40000
-    };
+    IEmployee headOfDepartment =EmployeeFactory.GetEmployeeInstance(EmployeeType.HeadOfDepartment, 4, "Jane", "Dew", 40000);
     employees.Add(headOfDepartment);
-    IEmployee deputyHeadMaster = new DeputyHeadMaster()
-    {
-        FirstName = "Peter",
-        LastName = "Kamau",
-        Id = 5,
-        Salary = 30000
-    };
+    IEmployee deputyHeadMaster = EmployeeFactory.GetEmployeeInstance(EmployeeType.DeputyHeadMaster, 5, "Peter", "Kamau", 50000);
     employees.Add(deputyHeadMaster);
 }
 public class Teacher : EmployeeBase
@@ -75,4 +47,43 @@ public class HeadMaster : EmployeeBase
 {
     public override decimal Salary { get => base.Salary + (base.Salary * 0.04m); }
 
+}
+
+public class EmployeeFactory
+{
+    public static IEmployee GetEmployeeInstance(EmployeeType employeeType, int id, string firstName, string lastName,
+        decimal salary)
+    {
+        IEmployee employee = null;
+        switch (employeeType)
+        {
+            case EmployeeType.Teacher:
+                employee = FactoryPattern<IEmployee, Teacher>.GetInstance();  
+                break;
+            case EmployeeType.HeadOfDepartment:
+                employee = FactoryPattern<IEmployee, HeadOfDepartment>.GetInstance();  
+                break;
+            case EmployeeType.DeputyHeadMaster:
+                employee = FactoryPattern<IEmployee, DeputyHeadMaster>.GetInstance();  
+                break;
+            case EmployeeType.HeadMaster:
+                employee = FactoryPattern<IEmployee, HeadMaster>.GetInstance();  
+                break;
+            default:
+                break;
+        }
+
+        if (employee != null)
+        {
+            employee.Id = id;
+            employee.FirstName = firstName;
+            employee.LastName = lastName;
+            employee.Salary = salary;
+        }
+        else
+        {
+            throw new NullReferenceException();
+        }
+        return employee;
+    }
 }
