@@ -5,12 +5,12 @@ List<IEmployee> employees = new List<IEmployee>();
 
 SeedData(employees);
 
-foreach (IEmployee employee in employees)
-{
-    totalSalaries += employee.Salary;
-}
+// foreach (IEmployee employee in employees)
+// {
+//     totalSalaries += employee.Salary;
+// }
 
-Console.WriteLine($"Total Annual Salaries(Including bonuses): {totalSalaries}");
+Console.WriteLine($"Total Annual Salaries(Including bonuses): {employees.Sum(emp => emp.Salary)}");
 static void SeedData(List<IEmployee> employees)
 {
     IEmployee teacher1 = new Teacher()
